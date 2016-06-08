@@ -1,0 +1,178 @@
+/* Default empty state */
+.faxes-container.empty .empty-state {
+	display: block;
+}
+
+.faxes-container .empty-state {
+	background: #FFF;
+	border: 1px dashed #ccc;
+	display: none;
+	padding: 0 10px 40px;
+	text-align: center;
+}
+
+.faxes-container .empty-state .icon-title {
+	color: #333;
+	font-size: 148px;
+}
+
+.faxes-container .empty-state .headline {
+	margin-top: -10px;
+}
+
+.faxes-container .empty-state .subtitle {
+	margin-top :10px;
+	color: #909099;
+}
+
+.faxes-container .data-state {
+	display: none;
+}
+
+.faxes-container.empty .loading-state {
+	top: 0;
+}
+
+.faxes-container .loading-state {
+	display: none;
+	background: #fff none repeat scroll 0 0;
+	border: 1px dashed #aaa;
+	font-size: 60px;
+	padding: 50px;
+	text-align: center;
+	position: relative;
+	top: 50px;
+}
+
+/* Action Bar */
+.faxes-container .filters.basic-actions {
+	display: inline-block;
+	margin-right: 10px;
+	width: 131px;
+}
+
+.faxes-container.outbound-faxes .filters.basic-actions {
+	width: 186px;
+}
+
+.faxes-container:not(.empty) .action-bar {
+	position: absolute;
+	z-index: 2;
+}
+
+.faxes-container .action-bar .actionable {
+	display: none;
+}
+
+.faxes-container .action-bar {
+	margin-bottom: 25px;
+}
+
+.faxes-container .action-bar .filters > :first-child {
+	margin-left: 0;
+}
+
+.faxes-container .action-bar .margin-left {
+	margin-left: 10px;
+}
+
+.faxes-container .action-bar .faxbox-selector {
+	display: inline-block;
+}
+
+.faxes-container .action-bar #select_faxbox {
+	width: 105px;
+	margin-bottom: 0;
+}
+
+.faxes-container .action-bar .mark-as-wrapper {
+	display: inline-block;
+}
+
+.faxes-container .action-bar .mark-as-wrapper.hidden {
+	display: none;
+}
+
+@media (min-width: 1240px) {
+	.faxes-container .action-bar .faxbox-selector {
+		margin-right: 65px;
+	}
+}
+
+.faxes-container .action-bar .sub-ranges {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+@media (max-width: 1250px) {
+	.faxes-container .action-bar .sub-ranges {
+		display: none;
+	}
+}
+
+.faxes-container .action-bar .custom-range > * {
+	margin: 0 10px 0 0;
+	vertical-align: middle;
+}
+
+.faxes-container .action-bar .custom-range > span {
+	margin-right: 5px;
+}
+
+.faxes-container .action-bar .custom-range input.date-filter {
+	height: 24px;
+	width: 80px;
+}
+
+/* Table */
+.faxes-container .faxes-table table {
+	margin-top: 0;
+}
+
+.faxes-container .faxes-table table .footable-header th:nth-child(1) {
+	width: 25px;
+}
+
+.faxes-container .faxes-table tbody tr {
+	height: 55px;
+}
+
+.faxes-container .faxes-table tbody tr > td:first-child .monster-checkbox {
+	margin-right: 10px;
+	margin-top: 8px;
+}
+
+.faxes-container .faxes-table table.highlighted tbody tr {
+	opacity: 0.3;
+}
+
+.faxes-container .faxes-table table.highlighted tbody tr.active {
+	opacity: 1;
+}
+
+.faxes-container .faxes-table .status {
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.faxes-container .faxes-table .status[data-status="success"] {
+	color: #33DB24;
+}
+
+.faxes-container .faxes-table .status[data-status="processing"] {
+	color: #02a5ff;
+}
+
+.faxes-container .faxes-table .status[data-status="failed"] {
+	color: #e01a00;
+}
+
+.faxes-container .faxes-table .empty-vm-row td {
+	text-align: center !important;
+}
+
+/* CDR Popup */
+#faxbox_cdr_details_dialog {
+	width: 750px;
+	margin: 15px;
+}

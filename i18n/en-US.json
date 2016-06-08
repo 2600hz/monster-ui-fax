@@ -1,0 +1,59 @@
+{
+	"fax": {
+		"title": "Fax Portal",
+		"menuTitles": {
+			"inbound": "Inbound faxes",
+			"outbound": "Outbound faxes"
+		},
+		"table": {
+			"columns": {
+				"status": "Status",
+				"sent": "Sent",
+				"sendingFaxbox": "Sending Faxbox",
+				"sendingNumber": "Sending Number",
+				"received": "Received",
+				"receivingFaxbox": "Receiving Faxbox",
+				"receivingNumber": "Receiving Number",
+				"pages": "Pages",
+				"from": "From"
+			},
+			"emptyRow": "There are no faxes listed under this Fax Box",
+			"status": {
+				"success": "Success",
+				"processing": "Processing",
+				"failed": "Failed",
+				"pending": "Pending",
+				"completed": "Completed"
+			},
+			"noData": "N/A"
+		},
+		"actionBar": {
+			"select": {
+				"all": "All on page",
+				"failed": "Failed",
+				"completed": "Completed",
+				"none": "None"
+			},
+			"selectFax": {
+				"none": "Filter to a specific Faxbox",
+				"all": "Show All Faxboxes"
+			},
+			"from": "From",
+			"to": "To",
+			"markAsNew": "Mark as New",
+			"tooltips": {
+				"refresh": "Refresh",
+				"select": "Select",
+				"resend": "Resend",
+				"delete": "Delete"
+			}
+		},
+		"empty": {
+			"headline": "In order to view and manage faxes, first select the desired fax box in this account.",
+			"subtitle": "Use the 'Filter to a specific Faxbox' above and to the left."
+		},
+		"CDRPopup": {
+			"title": "Fax Details"
+		}
+	}
+}
