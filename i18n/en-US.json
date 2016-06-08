@@ -54,6 +54,18 @@
 		},
 		"CDRPopup": {
 			"title": "Fax Details"
+		},
+		"deleteConfirm": {
+			"content": "Deleting the {{variable}} selected voicemail(s) will permanently remove them from the system. This action can not be undone or reversed, and the affected files will be gone forever.",
+			"title": "Are you sure?",
+			"confirmButtonText": "Delete Selected Files",
+			"success": "You successfully deleted the selected faxes from the system!"
+		},
+		"resendConfirm": {
+			"content": "You are attempting to redeliver {{variable}} faxes. Are you sure you want to attempt re-delivery?",
+			"confirmButtonText": "Re-send Faxes",
+			"title": "Are you sure?",
+			"success": "You successfully tried to re-send the selected faxes!"
 		}
 	}
 }

@@ -2,7 +2,8 @@ define(function(require){
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster'),
-		chosen = require('chosen');
+		chosen = require('chosen'),
+		toastr = require('toastr');
 
 	var app = {
 		name: 'fax',
@@ -68,20 +69,27 @@ define(function(require){
 			});
 		},
 
-		renderInbound: function(pArgs) {
+		renderFaxes: function(pArgs) {
 			var self = this,
 				args = pArgs || {},
 				parent = args.container || $('#fax_app_container .app-content-wrapper'),
 				dates = monster.util.getDefaultRangeDates(self.appFlags.ranges.default),
 				fromDate = dates.from,
-				toDate = dates.to;
+				toDate = dates.to,
+				type = pArgs.type;
 
-			var template = $(monster.template(self, 'inbound-faxes', { faxboxes: self.appFlags.faxboxes }));
+			var template = $(monster.template(self, type + '-faxes', { faxboxes: self.appFlags.faxboxes }));
 
 			self.bindCommon(template);
-			self.bindInbound(template);
 
-			self.initDatePicker('inbound', template, fromDate, toDate);
+			if(type === 'inbound') {
+				self.bindInbound(template);
+			}
+			else {
+				self.bindOutbound(template);
+			}
+
+			self.initDatePicker(template, fromDate, toDate);
 
 			parent
 				.fadeOut(function() {
@@ -91,97 +99,75 @@ define(function(require){
 						.fadeIn();
 				});
 
-			self.displayInboundFaxesList(template, fromDate, toDate);
+			self.displayFaxesList(type, template, fromDate, toDate);
+		},
+
+		renderInbound: function(pArgs) {
+			var self = this;
+
+			pArgs.type = 'inbound';
+
+			self.renderFaxes(pArgs);
 		},
 
 		renderOutbound: function(pArgs) {
-			var self = this,
-				args = pArgs || {},
-				parent = args.container || $('#fax_app_container .app-content-wrapper'),
-				dates = monster.util.getDefaultRangeDates(self.appFlags.ranges.default),
-				fromDate = dates.from,
-				toDate = dates.to;
+			var self = this;
 
-			var template = $(monster.template(self, 'outbound-faxes', { faxboxes: self.appFlags.faxboxes }));
+			pArgs.type = 'outbound';
 
-			self.bindCommon(template);
-			self.bindOutbound(template);
+			self.renderFaxes(pArgs);
+		},
 
-			self.initDatePicker('outbound', template, fromDate, toDate);
+		displayFaxesList: function(type, container, fromDate, toDate, selectedFaxbox) {
+			var self = this;
 
-			parent
-				.fadeOut(function() {
-					$(this)
-						.empty()
-						.append(template)
-						.fadeIn();
+			container.find('.data-state')
+					 .hide();
+
+			container.find('.loading-state')
+					 .show();
+
+			self.getTemplateData(type, container, fromDate, toDate, selectedFaxbox, function(template) {
+				monster.ui.footable(template.find('.footable'));
+				self.bindTableCommon(template);
+
+				container.removeClass('empty');
+
+				container.find('.main-select-message').prop('checked', false);
+
+				container.find('.data-state')
+						 .empty()
+						 .append(template)
+						 .show();
+
+				container.find('.loading-state')
+						 .hide();
+
+				if(selectedFaxbox) {
+					container.find('#select_faxbox').val(selectedFaxbox).trigger('change');
+				}
+			});
+		},
+
+		getTemplateData: function(type, container, fromDate, toDate, selectedFaxbox, callback) {
+			var self = this;
+
+			if(type === 'inbound') {
+				self.getInboundData(fromDate, toDate, function(data) {
+					var dataTemplate = self.formatInboundData(data),
+						template = $(monster.template(self, 'inbound-faxes-list', { faxes: dataTemplate }));
+
+					callback && callback(template);
 				});
+			}
+			else {
+				self.getOutboundData(fromDate, toDate, function(data) {
+					var dataTemplate = self.formatOutboundData(data),
+						template = $(monster.template(self, 'outbound-faxes-list', { faxes: dataTemplate }));
 
-			self.displayOutboundFaxesList(template, fromDate, toDate);
-		},
-
-		displayInboundFaxesList: function(container, fromDate, toDate) {
-			var self = this;
-
-			container.find('.data-state')
-					 .hide();
-
-			container.find('.loading-state')
-					 .show();
-
-			self.getInboundData(fromDate, toDate, function(data) {
-				var dataTemplate = self.formatInboundData(data);
-
-				container.removeClass('empty');
-
-				container.find('.main-select-message').prop('checked', false);
-
-				var template = $(monster.template(self, 'inbound-faxes-list', { faxes: dataTemplate }));
-
-				monster.ui.footable(template.find('.footable'));
-
-				self.bindTableCommon(template);
-
-				container.find('.data-state')
-						 .empty()
-						 .append(template)
-						 .show();
-
-				container.find('.loading-state')
-						 .hide();
-			});
-		},
-
-		displayOutboundFaxesList: function(container, fromDate, toDate) {
-			var self = this;
-
-			container.find('.data-state')
-					 .hide();
-
-			container.find('.loading-state')
-					 .show();
-
-			self.getOutboundData(fromDate, toDate, function(data) {
-				var dataTemplate = self.formatOutboundData(data);
-
-				container.removeClass('empty');
-
-				container.find('.main-select-message').prop('checked', false);
-
-				var template = $(monster.template(self, 'outbound-faxes-list', { faxes: dataTemplate }));
-
-				monster.ui.footable(template.find('.footable'));
-
-				self.bindTableCommon(template);
-
-				container.find('.data-state')
-						 .empty()
-						 .append(template)
-						 .show();
-
-				container.find('.loading-state')
-						 .hide();
-			});
+					callback && callback(template);
+				});
+			}
 		},
 
 		bindTableCommon: function(template) {
@@ -208,23 +194,7 @@ define(function(require){
 			});
 		},
 
-		getInboundData: function(fromDate, toDate, callback) {
-			var self = this;
-
-			self.getInboundFaxes(fromDate, toDate, function(faxes) {
-				callback && callback(faxes)
-			});
-		},
-
-		getOutboundData: function(fromDate, toDate, callback) {
-			var self = this;
-
-			self.getOutboundFaxes(fromDate, toDate, function(faxes) {
-				callback && callback(faxes)
-			});
-		},
-
-		initDatePicker: function(type, template, fromDate, toDate) {
+		initDatePicker: function(template, fromDate, toDate) {
 			var self = this;
 
 			var optionsDatePicker = {
@@ -238,17 +208,18 @@ define(function(require){
 			template.find('#endDate').datepicker('setDate', toDate);
 
 			template.find('.apply-filter').on('click', function(e) {
-				self.refreshFaxes(type, template);
+				self.refreshFaxes(template);
 			});
 		},
 
-		refreshFaxes: function(type, template) {
+		refreshFaxes: function(template) {
 			var self = this,
-				fnName = type === 'inbound' ? 'displayInboundFaxesList' : 'displayOutboundFaxesList',
+				type = template.hasClass('inbound-faxes') ? 'inbound' : 'outbound',
 				fromDate = template.find('input.filter-from').datepicker("getDate"),
-				toDate = template.find('input.filter-to').datepicker("getDate");
+				toDate = template.find('input.filter-to').datepicker("getDate"),
+				selectedFaxbox = template.find('#select_faxbox').val();
 
-			self[fnName](template, fromDate, toDate);
+			self.displayFaxesList(type, template, fromDate, toDate, selectedFaxbox)
 		},
 
 		bindCommon: function(template) {
@@ -272,6 +243,8 @@ define(function(require){
 				}
 
 				filtering.filter();
+
+				afterSelect();
 			});
 
 			function afterSelect() {
@@ -284,6 +257,10 @@ define(function(require){
 					template.find('.actionable').hide();
 				}
 			}
+
+			template.find('#refresh_faxbox').on('click', function() {
+				self.refreshFaxes(template);
+			});
 
 			template.on('click', '.select-fax', function() {
 				afterSelect();
@@ -315,21 +292,72 @@ define(function(require){
 
 				afterSelect();
 			});
+
+			template.find('#delete_faxes').on('click', function() {
+				var listSelected = [];
+				template.find('.select-fax:checked').each(function(a, el) {
+					listSelected.push($(el).data('id'));
+				});
+				var content = monster.template(self, '!'+ self.i18n.active().fax.deleteConfirm.content, { variable: listSelected.length });
+
+				monster.ui.confirm(content, function() {
+					template.find('.select-fax:checked').each(function(a, el) {
+						listSelected.push($(el).data('id'));
+					});
+
+					self.deleteFaxes(listSelected, function() {
+						toastr.success(self.i18n.active().fax.deleteConfirm.success);
+
+						self.refreshFaxes(template);
+					});
+				}, undefined, {
+					title: self.i18n.active().fax.deleteConfirm.title,
+					confirmButtonText: self.i18n.active().fax.deleteConfirm.confirmButtonText,
+					confirmButtonClass: 'monster-button-danger'
+				});
+			});
 		},
 
 		bindInbound: function(template) {
 			var self = this;
-
-			template.find('#refresh_faxbox').on('click', function() {
-				self.refreshInboundFaxes(template);
-			});
 		},
 
 		bindOutbound: function(template) {
 			var self = this;
 
-			template.find('#refresh_faxbox').on('click', function() {
-				self.refreshOutboundFaxes(template);
+			template.find('#resend_faxes').on('click', function() {
+				var listSelected = [];
+				template.find('.select-fax:checked').each(function(a, el) {
+					listSelected.push($(el).data('id'));
+				});
+				var content = monster.template(self, '!'+ self.i18n.active().fax.resendConfirm.content, { variable: listSelected.length });
+
+				monster.ui.confirm(content, function() {
+					self.resendFaxes(listSelected, function() {
+						toastr.success(self.i18n.active().fax.resendConfirm.success);
+
+						self.refreshFaxes(template);
+					});
+				}, undefined, {
+					title: self.i18n.active().fax.resendConfirm.title,
+					confirmButtonText: self.i18n.active().fax.resendConfirm.confirmButtonText
+				});
+			});
+		},
+
+		getInboundData: function(fromDate, toDate, callback) {
+			var self = this;
+
+			self.getInboundFaxes(fromDate, toDate, function(faxes) {
+				callback && callback(faxes)
+			});
+		},
+
+		getOutboundData: function(fromDate, toDate, callback) {
+			var self = this;
+
+			self.getOutboundFaxes(fromDate, toDate, function(faxes) {
+				callback && callback(faxes)
 			});
 		},
 
@@ -370,21 +398,6 @@ define(function(require){
 			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/' + mediaId + '/attachments?auth_token=' + self.authToken;
 		},
 
-/*		getFaxbox: function(faxboxId, callback) {
-			var self = this;
-
-			self.callApi({
-				resource: 'faxbox.get',
-				data: {
-					accountId: self.accountId,
-					faxboxId: faxboxId
-				},
-				success: function(data) {
-					callback && callback(data.data);
-				}
-			});
-		},
-*/
 		getInboundFaxes: function(fromDate, toDate, callback) {
 			var self = this;
 
@@ -511,6 +524,14 @@ define(function(require){
 					callback && callback(data.data);
 				}
 			});
+		},
+
+		deleteFaxes: function(listFaxes, callback) {
+			callback && callback();
+		},
+
+		resendFaxes: function(listFaxes, callback) {
+			callback && callback();
 		}
 	};
 
