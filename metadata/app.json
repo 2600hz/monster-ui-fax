@@ -1,9 +1,9 @@
 {
-	"name": "voicemails",
+	"name": "fax",
 	"i18n": {
 		"en-US": {
-			"label": "Voicemail Manager",
-			"description": "The Voicemail Manager lets you browse your users voicemails boxes and manage their voicemails.",
+			"label": "Fax Manager",
+			"description": "The Fax Manager allow you to review inbound and outbound faxes.",
 			"extended_description": "",
 			"features": [
 			]
@@ -12,7 +12,7 @@
 	"tags": [
 		"reseller"
 	],
-	"icon": "",
+	"icon": "FaxPortal.png",
 	"api_url": "http://10.26.0.41:8000/v2",
 	"author": "2600Hz",
 	"version": "1.0",
