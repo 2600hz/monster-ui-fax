@@ -49,7 +49,6 @@ define(function(require){
 				self.appFlags.faxboxes = _.indexBy(faxboxes, 'id');
 
 				monster.ui.generateAppLayout(self, {
-					appName: self.i18n.active().fax.title,
 					menus: [
 						{
 							tabs: [
