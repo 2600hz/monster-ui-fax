@@ -21,7 +21,9 @@
 						<input class="select-fax" type="checkbox" data-id="{{id}}" data-status="{{status}}"/>
 					{{/monsterCheckbox}}
 				</td>
-				<td class="status" data-sort-value="{{status}}" data-filter-value="{{status}}" data-status="{{status}}">{{status}}</td>
+				<td class="status" data-sort-value="{{status}}" data-filter-value="{{status}}" data-status="{{status}}">
+					<span data-toggle="tooltip" data-placement="top" data-original-title="{{ formatted.error }}">{{status}}</span>
+				</td>
 				<td data-sort-value="{{timestamp}}">{{formatted.timestamp}}</td>
 				<td>{{formatted.sendingFaxbox}}</td>
 				<td>{{formatted.sendingNumber}}</td>

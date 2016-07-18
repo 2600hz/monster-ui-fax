@@ -46,7 +46,6 @@ define(function(require){
 			var self = this;
 
 			self.listFaxboxes(function(faxboxes) {
-				console.log(faxboxes);
 				self.appFlags.faxboxes = _.indexBy(faxboxes, 'id');
 
 				monster.ui.generateAppLayout(self, {
@@ -143,7 +142,7 @@ define(function(require){
 				container.find('.loading-state')
 						 .hide();
 
-				if(selectedFaxbox) {
+				if(selectedFaxbox && selectedFaxbox !== 'none') {
 					container.find('#select_faxbox').val(selectedFaxbox).trigger('change');
 				}
 			});
@@ -294,7 +293,9 @@ define(function(require){
 			});
 
 			template.find('#delete_faxes').on('click', function() {
-				var listSelected = [];
+				var listSelected = [],
+					type = $(this).data('type');
+
 				template.find('.select-fax:checked').each(function(a, el) {
 					listSelected.push($(el).data('id'));
 				});
@@ -305,7 +306,7 @@ define(function(require){
 						listSelected.push($(el).data('id'));
 					});
 
-					self.deleteFaxes(listSelected, function() {
+					self.deleteFaxes(listSelected, type, function() {
 						toastr.success(self.i18n.active().fax.deleteConfirm.success);
 
 						self.refreshFaxes(template);
@@ -379,13 +380,21 @@ define(function(require){
 			var self = this;
 
 			_.each(data, function(fax) {
+				var details = fax.hasOwnProperty('rx_result') ? fax.rx_result : (fax.hasOwnProperty('tx_result') ? fax.tx_result : {});
+
+				fax.status = details.success === true ? 'success' : 'failed';
 				fax.formatted = {};
-				fax.formatted.timestamp = monster.util.toFriendlyDate(fax.created);
+
+				if(details.success === false) {
+					fax.formatted.error = details.result_text;
+				}
+
+				fax.formatted.timestamp = monster.util.toFriendlyDate(fax.hasOwnProperty('timestamp') ? fax.timestamp : details.pvt_delivered_date);
 				fax.formatted.receivingFaxbox = self.appFlags.faxboxes.hasOwnProperty(fax.faxbox_id) ? self.appFlags.faxboxes[fax.faxbox_id].name : '-';
-				fax.formatted.receivingNumber = monster.util.formatPhoneNumber(fax.to);
+				fax.formatted.receivingNumber = monster.util.formatPhoneNumber(fax.to_number);
 				fax.formatted.sendingFaxbox = self.appFlags.faxboxes.hasOwnProperty(fax.faxbox_id) ? self.appFlags.faxboxes[fax.faxbox_id].name : '-';
-				fax.formatted.sendingNumber = monster.util.formatPhoneNumber(fax.from);
-				fax.formatted.pages = fax.hasOwnProperty('pages') ? fax.pages : self.i18n.active().fax.table.noData;
+				fax.formatted.sendingNumber = monster.util.formatPhoneNumber(fax.from_number);
+				fax.formatted.pages = details.hasOwnProperty('total_pages') ? details.total_pages : self.i18n.active().fax.table.noData;
 				fax.formatted.uri = self.formatFaxURI(fax.id);
 			});
 
@@ -401,34 +410,7 @@ define(function(require){
 		getInboundFaxes: function(fromDate, toDate, callback) {
 			var self = this;
 
-			var data = {
-					data: [
-						{ id: '239183-102830-1293132130210321', status: 'failed', timestamp: 63574255365, faxbox_id: 'ee6d7483b508bf3dfd2699a9e5ff5414', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'processing', timestamp: 63514255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 1 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63524255365, faxbox_id: 'c9e068f1808125194739047e4c11c5f0', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63534255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 3 },
-						{ id: '239183-102830-1293132130210321', status: 'failed', timestamp: 63574255365, faxbox_id: 'ee6d7483b508bf3dfd2699a9e5ff5414', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'processing', timestamp: 63514255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 1 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63524255365, faxbox_id: 'c9e068f1808125194739047e4c11c5f0', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63534255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 3 },
-						{ id: '239183-102830-1293132130210321', status: 'failed', timestamp: 63574255365, faxbox_id: 'ee6d7483b508bf3dfd2699a9e5ff5414', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'processing', timestamp: 63514255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 1 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63524255365, faxbox_id: 'c9e068f1808125194739047e4c11c5f0', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63534255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 3 },
-						{ id: '239183-102830-1293132130210321', status: 'failed', timestamp: 63574255365, faxbox_id: 'ee6d7483b508bf3dfd2699a9e5ff5414', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'processing', timestamp: 63514255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 1 },
-						{ id: '239183-102830-1293132130210321',  status: 'success', timestamp: 63524255365, faxbox_id: 'c9e068f1808125194739047e4c11c5f0', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63534255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 3 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63554255365, faxbox_id: '02a83067c611d8567373775ac848ed16', to: '+1141412321', from: '+14159993333', pages: 2 }
-					]
-				};
-
-			self.listFaxboxes(function() {
-				callback && callback(data.data);
-			});
-
-			// fake processing time
-			/*self.callApi({
+			self.callApi({
 				resource: 'faxes.listInbound',
 				data: {
 					accountId: self.accountId,
@@ -442,40 +424,13 @@ define(function(require){
 				success: function(data) {
 					callback && callback(data.data);
 				}
-			});*/
+			});
 		},
 
 		getOutboundFaxes: function(fromDate, toDate, callback) {
 			var self = this;
 
-			var data = {
-					data: [
-						{ id: '239183-102830-1293132130210321', status: 'failed', timestamp: 63574255365, faxbox_id: 'ee6d7483b508bf3dfd2699a9e5ff5414', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'processing', timestamp: 63514255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 1 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63524255365, faxbox_id: 'c9e068f1808125194739047e4c11c5f0', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63534255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 3 },
-						{ id: '239183-102830-1293132130210321', status: 'failed', timestamp: 63574255365, faxbox_id: 'ee6d7483b508bf3dfd2699a9e5ff5414', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'processing', timestamp: 63514255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 1 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63524255365, faxbox_id: 'c9e068f1808125194739047e4c11c5f0', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63534255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 3 },
-						{ id: '239183-102830-1293132130210321', status: 'failed', timestamp: 63574255365, faxbox_id: 'ee6d7483b508bf3dfd2699a9e5ff5414', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'processing', timestamp: 63514255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 1 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63524255365, faxbox_id: 'c9e068f1808125194739047e4c11c5f0', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63534255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 3 },
-						{ id: '239183-102830-1293132130210321', status: 'failed', timestamp: 63574255365, faxbox_id: 'ee6d7483b508bf3dfd2699a9e5ff5414', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'processing', timestamp: 63514255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 1 },
-						{ id: '239183-102830-1293132130210321',  status: 'success', timestamp: 63524255365, faxbox_id: 'c9e068f1808125194739047e4c11c5f0', to: '+1141412321', from: '+14159993333', pages: 4 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63534255365, faxbox_id: 'bf67dc990c6beb73336e3052b3f5a99d', to: '+1141412321', from: '+14159993333', pages: 3 },
-						{ id: '239183-102830-1293132130210321', status: 'success', timestamp: 63554255365, faxbox_id: '02a83067c611d8567373775ac848ed16', to: '+1141412321', from: '+14159993333', pages: 2 }
-					]
-				};
-
-
-			self.listFaxboxes(function() {
-				callback && callback(data.data);
-			});
-
-			/*self.callApi({
+			self.callApi({
 				resource: 'faxes.listOutbound',
 				data: {
 					accountId: self.accountId,
@@ -489,7 +444,7 @@ define(function(require){
 				success: function(data) {
 					callback && callback(data.data);
 				}
-			});*/
+			});
 		},
 
 		listFaxboxes: function(callback) {
@@ -526,8 +481,38 @@ define(function(require){
 			});
 		},
 
-		deleteFaxes: function(listFaxes, callback) {
-			callback && callback();
+		deleteFaxes: function(listFaxes, pType, globalCallback) {
+			var self = this,
+				type = pType === 'inbound' ? 'inbound' : 'outbound',
+				requests = {};
+
+			_.each(listFaxes, function(faxId) {
+				requests[faxId] = function(callback) {
+					self.deleteFax(faxId, type, function(data) {
+						callback && callback(null, data);
+					});
+				}
+			});
+
+			monster.parallel(requests, function(err, results) {
+				globalCallback && globalCallback(results);
+			});
+		},
+
+		deleteFax: function(faxId, type, callback) {
+			var self = this,
+				resource = type === 'inbound' ? 'deleteInbound' : 'deleteOutbound';
+
+			self.callApi({
+				resource: 'faxes.' + resource,
+				data: {
+					accountId: self.accountId,
+					faxId: faxId
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
+			});
 		},
 
 		resendFaxes: function(listFaxes, callback) {
