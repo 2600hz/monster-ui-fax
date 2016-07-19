@@ -363,19 +363,19 @@ define(function(require){
 
 		formatInboundData: function(data) {
 			var self = this,
-				formattedFaxes = self.formatFaxes(data);
+				formattedFaxes = self.formatFaxes(data, 'inbound');
 
 			return formattedFaxes;
 		},
 
 		formatOutboundData: function(data) {
 			var self = this,
-				formattedFaxes = self.formatFaxes(data);
+				formattedFaxes = self.formatFaxes(data, 'outbound');
 
 			return formattedFaxes;
 		},
 
-		formatFaxes: function(data) {
+		formatFaxes: function(data, type) {
 			var self = this;
 
 			_.each(data, function(fax) {
@@ -394,16 +394,17 @@ define(function(require){
 				fax.formatted.sendingFaxbox = self.appFlags.faxboxes.hasOwnProperty(fax.faxbox_id) ? self.appFlags.faxboxes[fax.faxbox_id].name : '-';
 				fax.formatted.sendingNumber = monster.util.formatPhoneNumber(fax.from_number);
 				fax.formatted.pages = details.hasOwnProperty('total_pages') ? details.total_pages : self.i18n.active().fax.table.noData;
-				fax.formatted.uri = self.formatFaxURI(fax.id);
+				fax.formatted.uri = self.formatFaxURI(fax.id, type);
 			});
 
 			return data;
 		},
 
-		formatFaxURI: function(mediaId) {
-			var self = this;
+		formatFaxURI: function(mediaId, pType) {
+			var self = this,
+				type = pType === 'inbound' ? 'inbox' : 'outbox';
 
-			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/' + mediaId + '/attachments?auth_token=' + self.authToken;
+			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/'+ type +'/' + mediaId + '/attachment?auth_token=' + self.authToken;
 		},
 
 		getInboundFaxes: function(fromDate, toDate, callback) {
@@ -465,8 +466,8 @@ define(function(require){
 
 		getFaxDetails: function(type, faxId, callback) {
 			var self = this,
-				resourceName = 'faxes.' + (type === 'inbound' ? 'getAttachmentInbound' : 'getAttachmentOutbound');
-				//resourceName = 'faxes.' + (type === 'inbound' ? 'getDetailsInbound' : 'getDetailsOutbound');
+				//resourceName = 'faxes.' + (type === 'inbound' ? 'getAttachmentInbound' : 'getAttachmentOutbound');
+				resourceName = 'faxes.' + (type === 'inbound' ? 'getDetailsInbound' : 'getDetailsOutbound');
 
 			self.callApi({
 				resource: resourceName,
