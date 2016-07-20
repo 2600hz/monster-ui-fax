@@ -516,7 +516,40 @@ define(function(require){
 		},
 
 		resendFaxes: function(listFaxes, callback) {
-			callback && callback();
+			var self = this,
+				requests = {};
+
+			_.each(listFaxes, function(faxId) {
+				requests[faxId] = function(callback) {
+					self.resendFax(faxId,  function(data) {
+						callback && callback(null, data);
+					});
+				}
+			});
+
+			monster.parallel(requests, function(err, results) {
+				globalCallback && globalCallback(results);
+			});
+		},
+
+		resendFax: function(faxId, callback) {
+			var self = this;
+
+			self.getFaxDetails('outbound', faxId, function(fax) {
+				fax.attempts = 0;
+
+				self.callApi({
+					resource: 'faxes.updateOutbound',
+					data: {
+						accountId: self.accountId,
+						faxId: faxId,
+						data: fax
+					},
+					success: function(data) {
+						callback && callback(data.data);
+					}
+				});
+			});
 		}
 	};
 
