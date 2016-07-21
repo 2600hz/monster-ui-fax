@@ -535,21 +535,19 @@ define(function(require){
 		resendFax: function(faxId, callback) {
 			var self = this;
 
-			self.getFaxDetails('outbound', faxId, function(fax) {
-				self.callApi({
-					resource: 'faxes.updateOutbound',
-					data: {
-						accountId: self.accountId,
-						faxId: faxId,
-						data: fax,
-						envelopeKeys: {
-							action: 'resubmit'
-						}
-					},
-					success: function(data) {
-						callback && callback(data.data);
+			self.callApi({
+				resource: 'faxes.updateOutbound',
+				data: {
+					accountId: self.accountId,
+					faxId: faxId,
+					data: {},
+					envelopeKeys: {
+						action: 'resubmit'
 					}
-				});
+				},
+				success: function(data) {
+					callback && callback(data.data);
+				}
 			});
 		}
 	};
