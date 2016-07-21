@@ -536,14 +536,15 @@ define(function(require){
 			var self = this;
 
 			self.getFaxDetails('outbound', faxId, function(fax) {
-				fax.attempts = 0;
-
 				self.callApi({
 					resource: 'faxes.updateOutbound',
 					data: {
 						accountId: self.accountId,
 						faxId: faxId,
-						data: fax
+						data: fax,
+						envelopeKeys: {
+							action: 'resubmit'
+						}
 					},
 					success: function(data) {
 						callback && callback(data.data);
