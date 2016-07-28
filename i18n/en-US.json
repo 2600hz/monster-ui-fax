@@ -3,7 +3,8 @@
 		"title": "Fax Portal",
 		"menuTitles": {
 			"inbound": "Inbound faxes",
-			"outbound": "Outbound faxes"
+			"outbound": "Outbound faxes",
+			"logs": "Logs"
 		},
 		"table": {
 			"columns": {
@@ -66,6 +67,24 @@
 			"confirmButtonText": "Re-send Faxes",
 			"title": "Are you sure?",
 			"success": "You successfully tried to re-send the selected faxes!"
+		},
+
+
+		"logs": {
+			"tableTitles": {
+				"from": "From",
+				"to": "To",
+				"date": "Date",
+				"details": "Details",
+				"status": "Status"
+			},
+			"detailDialog": {
+				"popupTitle": "Technical Details",
+				"metadataTitle": "Metadata",
+				"errorTitle": "Error(s)",
+				"apiKeys": {
+				}
+			}
 		}
 	}
 }

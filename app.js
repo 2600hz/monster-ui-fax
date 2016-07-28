@@ -59,6 +59,10 @@ define(function(require){
 								{
 									text: self.i18n.active().fax.menuTitles.outbound,
 									callback: self.renderOutbound
+								},
+								{
+									text: self.i18n.active().fax.menuTitles.logs,
+									callback: self.renderLogs
 								}
 							]
 						}
@@ -405,6 +409,171 @@ define(function(require){
 				type = pType === 'inbound' ? 'inbox' : 'outbox';
 
 			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/'+ type +'/' + mediaId + '/attachment?auth_token=' + self.authToken;
+		},
+
+		renderLogs: function(pArgs) {
+			var self = this,
+				args = pArgs || {},
+				parent = args.container || $('#fax_app_container .app-content-wrapper'),
+				template = $(monster.template(self, 'logs-layout'));
+
+			self.logsInitTable(template, function() {
+				self.logsBindEvents(template);
+
+				parent
+					.fadeOut(function() {
+						$(this)
+							.empty()
+							.append(template)
+							.fadeIn();
+					});
+			});
+		},
+
+		logsBindEvents: function(template) {
+			var self = this;
+
+			template.on('click','.detail-link', function() {
+				var logId = $(this).data('id');
+
+				self.logsRenderDetailPopup(logId);
+			});
+		},
+
+		logsRenderDetailPopup: function(logId) {
+			var self = this;
+
+			self.logsGetDetails(logId, function(details) {
+				var detailTemplate = $(monster.template(self, 'logs-detail', details));
+
+				detailTemplate.find('#close').on('click', function() {
+					popup.dialog('close').remove();
+				});
+
+				var popup = monster.ui.dialog(detailTemplate, {
+					title: self.i18n.active().fax.logs.detailDialog.popupTitle,
+					position: ['center', 20]
+				});
+			});
+		},
+
+		logsFormatDataTable: function(logs) {
+			var self = this,
+				formattedArray = [];
+
+			$.each(logs, function() {
+				formattedArray.push([this.hasOwnProperty('error'), this.from || '-', this.to || '-', monster.util.toFriendlyDate(this.created), this.id, this.id, this.created]);
+			});
+
+			return formattedArray;
+		},
+
+		logsFormatDetailData: function(details) {
+			var self = this,
+				formattedData = {
+					metadata: {},
+					errors: []
+				},
+				formattedKey = '';
+
+			_.each(details, function(value, key) {
+				if(key === 'errors') {
+					formattedData.errors = value;
+				}
+				else {
+					formattedKey = self.i18n.active().fax.logs.detailDialog.apiKeys.hasOwnProperty(key) ? self.i18n.active().fax.logs.detailDialog.apiKeys[key] : key.replace(/_/g, ' ');
+					formattedData.metadata[key] = {
+						friendlyKey: formattedKey,
+						value: value
+					}
+				}
+			});
+
+			return formattedData;
+		},
+
+		logsInitTable: function(template, callback) {
+			var self = this,
+				hasError,
+				iconClass,
+				columns = [
+					{
+						'sTitle': self.i18n.active().fax.logs.tableTitles.status,
+						'fnRender': function(obj) {
+							hasError = obj.aData[0];
+							iconClass = hasError ? 'thumbs-down monster-red' : 'thumbs-up monster-green';
+
+							return '<i class="fa fa-'+ iconClass + '">';
+						}
+					},
+					{
+						'sTitle': self.i18n.active().fax.logs.tableTitles.from
+					},
+					{
+						'sTitle': self.i18n.active().fax.logs.tableTitles.to
+					},
+					{
+						'sTitle': self.i18n.active().fax.logs.tableTitles.date
+					},
+					{
+						'sTitle': self.i18n.active().fax.logs.tableTitles.details,
+						'fnRender': function(obj) {
+							return '<a href="#" class="detail-link monster-link" data-id="'+ obj.aData[4] + '"><i class="fa fa-eye"></i></a>';
+						}
+					},
+					{
+						'sTitle': 'ID',
+						bVisible: false
+					},
+					{
+						'sTitle': 'Timestamp',
+						bVisible: false
+					}
+				];
+
+			self.logsGetData(function(logs) {
+				monster.ui.table.create('logs', template.find('#smtp_logs_grid'), columns, logs, {
+					sDom: '<"table-custom-actions">frtlip',
+					aaSorting: [[3, 'desc']]
+				});
+
+				$.fn.dataTableExt.afnFiltering.pop();
+
+				callback && callback();
+			});
+		},
+
+		logsGetData: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'faxes.getLogs',
+				data: {
+					accountId: self.accountId
+				},
+				success: function(data) {
+					var formattedData = self.logsFormatDataTable(data.data);
+
+					callback && callback(formattedData);
+				}
+			});
+		},
+
+		logsGetDetails: function(id, callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'faxes.getLogDetails',
+				data: {
+					accountId: self.accountId,
+					logId: id
+				},
+				success: function(data) {
+					var formattedData = self.logsFormatDetailData(data.data);
+
+					callback && callback(formattedData);
+				}
+			});
 		},
 
 		getInboundFaxes: function(fromDate, toDate, callback) {

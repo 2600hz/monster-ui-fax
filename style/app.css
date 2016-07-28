@@ -176,3 +176,24 @@
 	width: 750px;
 	margin: 15px;
 }
+
+/* Faxes log */
+#smtp_logs_container .table .detail-link {
+	margin: 0px;
+}
+
+#smtp_logs_grid {
+	clear: right;
+}
+
+#smtp_logs_detail_dialog {
+	width: 700px;
+	padding: 15px;
+}
+
+#smtp_logs_detail_dialog tr,
+#smtp_logs_detail_dialog td {
+	line-height: 15px;
+	padding: 2px;
+	white-space: normal;
+}
