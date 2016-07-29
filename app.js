@@ -411,7 +411,7 @@ define(function(require){
 			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/'+ type +'/' + mediaId + '/attachment?auth_token=' + self.authToken;
 		},
 
-		renderLogs: function(pArgs) {
+		oldRenderLogs: function(pArgs) {
 			var self = this,
 				args = pArgs || {},
 				parent = args.container || $('#fax_app_container .app-content-wrapper'),
@@ -430,11 +430,35 @@ define(function(require){
 			});
 		},
 
+		renderLogs: function(pArgs) {
+			var self = this,
+				args = pArgs || {},
+				parent = args.container || $('#fax_app_container .app-content-wrapper');
+
+			self.logsGetData(function(logs) {
+				var formattedData = self.logsFormatDataTable(logs),
+					template = $(monster.template(self, 'logs-layout', { logs: formattedData }));
+
+				monster.ui.footable(template.find('.footable'));
+
+				self.logsBindEvents(template);
+
+				parent
+					.fadeOut(function() {
+						$(this)
+							.empty()
+							.append(template)
+							.fadeIn();
+					});
+			});
+		},
+
+
 		logsBindEvents: function(template) {
 			var self = this;
 
 			template.on('click','.detail-link', function() {
-				var logId = $(this).data('id');
+				var logId = $(this).parents('tr').data('id');
 
 				self.logsRenderDetailPopup(logId);
 			});
@@ -461,11 +485,15 @@ define(function(require){
 			var self = this,
 				formattedArray = [];
 
-			$.each(logs, function() {
-				formattedArray.push([this.hasOwnProperty('error'), this.from || '-', this.to || '-', monster.util.toFriendlyDate(this.created), this.id, this.id, this.created]);
+			_.each(logs, function(log) {
+				log.formatted = {};
+				log.formatted.hasError = log.hasOwnProperty('error');
+				log.formatted.from = log.from || '-';
+				log.formatted.to = log.to || '-';
+				log.formatted.date = monster.util.toFriendlyDate(log.created);
 			});
 
-			return formattedArray;
+			return logs;
 		},
 
 		logsFormatDetailData: function(details) {
@@ -492,57 +520,6 @@ define(function(require){
 			return formattedData;
 		},
 
-		logsInitTable: function(template, callback) {
-			var self = this,
-				hasError,
-				iconClass,
-				columns = [
-					{
-						'sTitle': self.i18n.active().fax.logs.tableTitles.status,
-						'fnRender': function(obj) {
-							hasError = obj.aData[0];
-							iconClass = hasError ? 'thumbs-down monster-red' : 'thumbs-up monster-green';
-
-							return '<i class="fa fa-'+ iconClass + '">';
-						}
-					},
-					{
-						'sTitle': self.i18n.active().fax.logs.tableTitles.from
-					},
-					{
-						'sTitle': self.i18n.active().fax.logs.tableTitles.to
-					},
-					{
-						'sTitle': self.i18n.active().fax.logs.tableTitles.date
-					},
-					{
-						'sTitle': self.i18n.active().fax.logs.tableTitles.details,
-						'fnRender': function(obj) {
-							return '<a href="#" class="detail-link monster-link" data-id="'+ obj.aData[4] + '"><i class="fa fa-eye"></i></a>';
-						}
-					},
-					{
-						'sTitle': 'ID',
-						bVisible: false
-					},
-					{
-						'sTitle': 'Timestamp',
-						bVisible: false
-					}
-				];
-
-			self.logsGetData(function(logs) {
-				monster.ui.table.create('logs', template.find('#smtp_logs_grid'), columns, logs, {
-					sDom: '<"table-custom-actions">frtlip',
-					aaSorting: [[3, 'desc']]
-				});
-
-				$.fn.dataTableExt.afnFiltering.pop();
-
-				callback && callback();
-			});
-		},
-
 		logsGetData: function(callback) {
 			var self = this;
 
@@ -552,9 +529,7 @@ define(function(require){
 					accountId: self.accountId
 				},
 				success: function(data) {
-					var formattedData = self.logsFormatDataTable(data.data);
-
-					callback && callback(formattedData);
+					callback && callback(data.data);
 				}
 			});
 		},
