@@ -4,7 +4,7 @@
 		"menuTitles": {
 			"inbound": "Inbound faxes",
 			"outbound": "Outbound faxes",
-			"logs": "Logs"
+			"logs": "Email-to-Fax Logs"
 		},
 		"table": {
 			"columns": {
