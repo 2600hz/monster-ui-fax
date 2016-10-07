@@ -408,7 +408,7 @@ define(function(require){
 			var self = this,
 				type = pType === 'inbound' ? 'inbox' : 'outbox';
 
-			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/'+ type +'/' + mediaId + '/attachment?auth_token=' + self.authToken;
+			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/'+ type +'/' + mediaId + '/attachment?auth_token=' + self.getAuthToken();
 		},
 
 		oldRenderLogs: function(pArgs) {
