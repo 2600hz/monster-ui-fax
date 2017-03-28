@@ -9,7 +9,7 @@
 		"table": {
 			"columns": {
 				"status": "Status",
-				"sent": "Sent",
+				"sent": "Date",
 				"sendingFaxbox": "Sending Faxbox",
 				"sendingNumber": "Sending Number",
 				"received": "Received",
