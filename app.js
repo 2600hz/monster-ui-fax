@@ -392,7 +392,7 @@ define(function(require){
 					fax.formatted.error = details.result_text;
 				}
 
-				fax.formatted.timestamp = monster.util.toFriendlyDate(fax.hasOwnProperty('timestamp') ? fax.timestamp : details.pvt_delivered_date);
+				fax.formatted.timestamp = monster.util.toFriendlyDate(fax.created);
 				fax.formatted.receivingFaxbox = self.appFlags.faxboxes.hasOwnProperty(fax.faxbox_id) ? self.appFlags.faxboxes[fax.faxbox_id].name : '-';
 				fax.formatted.receivingNumber = monster.util.formatPhoneNumber(fax.to_number);
 				fax.formatted.sendingFaxbox = self.appFlags.faxboxes.hasOwnProperty(fax.faxbox_id) ? self.appFlags.faxboxes[fax.faxbox_id].name : '-';
