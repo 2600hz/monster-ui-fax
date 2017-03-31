@@ -7,7 +7,7 @@
 				<th>{{ i18n.fax.table.columns.receivingFaxbox }}</th>
 				<th>{{ i18n.fax.table.columns.receivingNumber }}</th>
 				<th>{{ i18n.fax.table.columns.from }}</th>
-				<th data-breakpoints="xs">{{ i18n.fax.table.columns.pages }}</th>
+				<th data-breakpoints="xs" data-type="number">{{ i18n.fax.table.columns.pages }}</th>
 				<th data-filterable="false" data-type="html" data-sortable="false"></th>
 			</tr>
 		</thead>
@@ -20,7 +20,7 @@
 						<input class="select-fax" type="checkbox" data-id="{{id}}"/>
 					{{/monsterCheckbox}}
 				</td>
-				<td data-sort-value="{{timestamp}}">{{formatted.timestamp}}</td>
+				<td data-sort-value="{{formatted.timestamp}}">{{formatted.timestamp}}</td>
 				<td>{{formatted.receivingFaxbox}}</td>
 				<td>{{formatted.receivingNumber}}</td>
 				<td>{{formatted.sendingNumber}}</td>

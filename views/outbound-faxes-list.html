@@ -8,7 +8,7 @@
 				<th>{{ i18n.fax.table.columns.sendingFaxbox }}</th>
 				<th>{{ i18n.fax.table.columns.sendingNumber }}</th>
 				<th>{{ i18n.fax.table.columns.receivingNumber }}</th>
-				<th data-breakpoints="xs">{{ i18n.fax.table.columns.pages }}</th>
+				<th data-breakpoints="xs" data-type="number">{{ i18n.fax.table.columns.pages }}</th>
 				<th data-filterable="false" data-type="html" data-sortable="false"></th>
 			</tr>
 		</thead>
@@ -24,7 +24,7 @@
 				<td class="status" data-sort-value="{{status}}" data-filter-value="{{status}}" data-status="{{status}}">
 					<span data-toggle="tooltip" data-placement="top" data-original-title="{{ formatted.error }}">{{status}}</span>
 				</td>
-				<td data-sort-value="{{timestamp}}">{{formatted.timestamp}}</td>
+				<td data-sort-value="{{formatted.timestamp}}">{{formatted.timestamp}}</td>
 				<td>{{formatted.sendingFaxbox}}</td>
 				<td>{{formatted.sendingNumber}}</td>
 				<td>{{formatted.receivingNumber}}</td>
