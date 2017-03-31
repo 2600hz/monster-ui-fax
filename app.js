@@ -397,7 +397,7 @@ define(function(require){
 				fax.formatted.receivingNumber = monster.util.formatPhoneNumber(fax.to_number);
 				fax.formatted.sendingFaxbox = self.appFlags.faxboxes.hasOwnProperty(fax.faxbox_id) ? self.appFlags.faxboxes[fax.faxbox_id].name : '-';
 				fax.formatted.sendingNumber = monster.util.formatPhoneNumber(fax.from_number);
-				fax.formatted.pages = details.hasOwnProperty('total_pages') ? details.total_pages : self.i18n.active().fax.table.noData;
+				fax.formatted.pages = details.hasOwnProperty('total_pages') ? details.total_pages : 0;
 				fax.formatted.uri = self.formatFaxURI(fax.id, type);
 			});
 
