@@ -45,30 +45,118 @@ define(function(require){
 		render: function(container) {
 			var self = this;
 
-			self.listFaxboxes(function(faxboxes) {
-				self.appFlags.faxboxes = _.indexBy(faxboxes, 'id');
+			self.getFaxData(function(results) {
+				self.appFlags.faxboxes = _.indexBy(results.faxboxes, 'id');
+
+				var menus = [
+					{
+						tabs: [
+							{
+								text: self.i18n.active().fax.menuTitles.inbound,
+								callback: self.renderInbound
+							},
+							{
+								text: self.i18n.active().fax.menuTitles.outbound,
+								callback: self.renderOutbound
+							},
+							{
+								text: self.i18n.active().fax.menuTitles.logs,
+								callback: self.renderLogs
+							}
+						]
+					}
+				];
+
+				if (results.storage) {
+					var tabStorage = {
+						text: self.i18n.active().fax.menuTitles.storage,
+						callback: self.renderStorage
+					};
+
+					menus[0].tabs.push(tabStorage);
+				}
 
 				monster.ui.generateAppLayout(self, {
-					menus: [
-						{
-							tabs: [
-								{
-									text: self.i18n.active().fax.menuTitles.inbound,
-									callback: self.renderInbound
-								},
-								{
-									text: self.i18n.active().fax.menuTitles.outbound,
-									callback: self.renderOutbound
-								},
-								{
-									text: self.i18n.active().fax.menuTitles.logs,
-									callback: self.renderLogs
-								}
-							]
-						}
-					]
+					menus: menus
 				});
 			});
+		},
+
+		getFaxData: function(callback) {
+			var self = this;
+
+			monster.parallel({
+				faxboxes: function(callback) {
+					self.listFaxboxes(function(faxboxes) {
+						callback(null, faxboxes);
+					});
+				},
+				storage: function(callback) {
+					self.getStorage(function(storage) {
+						callback(null, storage);
+					});
+				}
+			},
+			function(err, results) {
+				callback && callback(results);
+			});
+		},
+
+		getStorage: function(callback) {
+			var self = this;
+
+			self.callApi({
+				resource: 'storage.get',
+				data: {
+					accountId: self.accountId,
+					generateError: false
+				},
+				success: function(data) {
+					callback(data.data);
+				},
+				error: function(data, error, globalHandler) {
+					if (error.status === 404) {
+						callback(undefined);
+					} else {
+						globalHandler(data);
+					}
+				}
+			});
+		},
+
+		renderStorage: function(pArgs) {
+			var self = this,
+				args = pArgs || {},
+				parent = args.container || $('#fax_app_container .app-content-wrapper');
+
+			self.getStorage(function(storage) {
+				var formattedData = self.storageFormatData(storage),
+					template = $(monster.template(self, 'storage', formattedData));
+
+				self.storageBindEvents(template);
+
+				monster.pub('common.storagePlanManager.render', {
+					container: template.find('.control-container'),
+					forceTypes: ['fax'],
+					hideOtherTypes: true
+				});
+
+				parent
+					.fadeOut(function() {
+						$(this)
+							.empty()
+							.append(template)
+							.fadeIn();
+					});
+			});
+		},
+
+		storageBindEvents: function(template) {
+			var self = this;
+		},
+
+		storageFormatData: function(data) {
+			return data;
 		},
 
 		renderFaxes: function(pArgs) {
