@@ -1,4 +1,4 @@
-define(function(require){
+define(function(require) {
 	var $ = require('jquery'),
 		_ = require('underscore'),
 		monster = require('monster'),
@@ -10,14 +10,14 @@ define(function(require){
 
 		css: [ 'app' ],
 
-		i18n: { 
+		i18n: {
 			'en-US': { customCss: false }
 		},
 
 		requests: {},
 		subscribe: {},
 
-		load: function(callback){
+		load: function(callback) {
 			var self = this;
 
 			self.initApp(function() {
@@ -172,10 +172,9 @@ define(function(require){
 
 			self.bindCommon(template);
 
-			if(type === 'inbound') {
+			if (type === 'inbound') {
 				self.bindInbound(template);
-			}
-			else {
+			} else {
 				self.bindOutbound(template);
 			}
 
@@ -211,11 +210,13 @@ define(function(require){
 		displayFaxesList: function(type, container, fromDate, toDate, selectedFaxbox) {
 			var self = this;
 
-			container.find('.data-state')
-					 .hide();
+			container
+				.find('.data-state')
+					.hide();
 
-			container.find('.loading-state')
-					 .show();
+			container
+				.find('.loading-state')
+					.show();
 
 			self.getTemplateData(type, container, fromDate, toDate, selectedFaxbox, function(template) {
 				monster.ui.footable(template.find('.footable'));
@@ -225,15 +226,17 @@ define(function(require){
 
 				container.find('.main-select-message').prop('checked', false);
 
-				container.find('.data-state')
-						 .empty()
-						 .append(template)
-						 .show();
+				container
+					.find('.data-state')
+						.empty()
+						.append(template)
+						.show();
 
-				container.find('.loading-state')
-						 .hide();
+				container
+					.find('.loading-state')
+						.hide();
 
-				if(selectedFaxbox && selectedFaxbox !== 'none') {
+				if (selectedFaxbox && selectedFaxbox !== 'none') {
 					container.find('#select_faxbox').val(selectedFaxbox).trigger('change');
 				}
 			});
@@ -242,15 +245,14 @@ define(function(require){
 		getTemplateData: function(type, container, fromDate, toDate, selectedFaxbox, callback) {
 			var self = this;
 
-			if(type === 'inbound') {
+			if (type === 'inbound') {
 				self.getInboundData(fromDate, toDate, function(data) {
 					var dataTemplate = self.formatInboundData(data),
 						template = $(monster.template(self, 'inbound-faxes-list', { faxes: dataTemplate }));
 
 					callback && callback(template);
 				});
-			}
-			else {
+			} else {
 				self.getOutboundData(fromDate, toDate, function(data) {
 					var dataTemplate = self.formatOutboundData(data),
 						template = $(monster.template(self, 'outbound-faxes-list', { faxes: dataTemplate }));
@@ -305,30 +307,32 @@ define(function(require){
 		refreshFaxes: function(template) {
 			var self = this,
 				type = template.hasClass('inbound-faxes') ? 'inbound' : 'outbound',
-				fromDate = template.find('input.filter-from').datepicker("getDate"),
-				toDate = template.find('input.filter-to').datepicker("getDate"),
+				fromDate = template.find('input.filter-from').datepicker('getDate'),
+				toDate = template.find('input.filter-to').datepicker('getDate'),
 				selectedFaxbox = template.find('#select_faxbox').val();
 
-			self.displayFaxesList(type, template, fromDate, toDate, selectedFaxbox)
+			self.displayFaxesList(type, template, fromDate, toDate, selectedFaxbox);
 		},
 
 		bindCommon: function(template) {
 			var self = this,
-				currentVM,
 				$selectFaxbox = template.find('#select_faxbox');
 
 			monster.ui.tooltips(template);
 
-			$selectFaxbox.chosen({search_contains: true, width: '220px', placeholder_text_single: self.i18n.active().fax.actionBar.selectFax.none });
+			$selectFaxbox.chosen({
+				search_contains: true,
+				width: '220px',
+				placeholder_text_single: self.i18n.active().fax.actionBar.selectFax.none
+			});
 
 			$selectFaxbox.on('change', function(e) {
 				var filtering = FooTable.get('#fax_list').use(FooTable.Filtering),
 					filter = $(this).val();
 
-				if(filter === 'all') {
+				if (filter === 'all') {
 					filtering.removeFilter('faxbox_filter');
-				}
-				else {
+				} else {
 					filtering.addFilter('faxbox_filter', filter, [0]);
 				}
 
@@ -338,11 +342,10 @@ define(function(require){
 			});
 
 			function afterSelect() {
-				if(template.find('.select-fax:checked').length) {
+				if (template.find('.select-fax:checked').length) {
 					template.find('.main-select-fax').prop('checked', true);
 					template.find('.actionable').show();
-				}
-				else{
+				} else {
 					template.find('.main-select-fax').prop('checked', false);
 					template.find('.actionable').hide();
 				}
@@ -371,11 +374,10 @@ define(function(require){
 
 				template.find('.select-fax').prop('checked', false);
 
-				if(type !== 'none') {
-					if(type === 'all') {
+				if (type !== 'none') {
+					if (type === 'all') {
 						template.find('.select-fax').prop('checked', true);
-					}
-					else {
+					} else {
 						template.find('.select-fax[data-status="' + type + '"]').prop('checked', true);
 					}
 				}
@@ -390,7 +392,7 @@ define(function(require){
 				template.find('.select-fax:checked').each(function(a, el) {
 					listSelected.push($(el).data('id'));
 				});
-				var content = monster.template(self, '!'+ self.i18n.active().fax.deleteConfirm.content, { variable: listSelected.length });
+				var content = monster.template(self, '!' + self.i18n.active().fax.deleteConfirm.content, { variable: listSelected.length });
 
 				monster.ui.confirm(content, function() {
 					template.find('.select-fax:checked').each(function(a, el) {
@@ -422,7 +424,7 @@ define(function(require){
 				template.find('.select-fax:checked').each(function(a, el) {
 					listSelected.push($(el).data('id'));
 				});
-				var content = monster.template(self, '!'+ self.i18n.active().fax.resendConfirm.content, { variable: listSelected.length });
+				var content = monster.template(self, '!' + self.i18n.active().fax.resendConfirm.content, { variable: listSelected.length });
 
 				monster.ui.confirm(content, function() {
 					self.resendFaxes(listSelected, function() {
@@ -441,7 +443,7 @@ define(function(require){
 			var self = this;
 
 			self.getInboundFaxes(fromDate, toDate, function(faxes) {
-				callback && callback(faxes)
+				callback && callback(faxes);
 			});
 		},
 
@@ -449,7 +451,7 @@ define(function(require){
 			var self = this;
 
 			self.getOutboundFaxes(fromDate, toDate, function(faxes) {
-				callback && callback(faxes)
+				callback && callback(faxes);
 			});
 		},
 
@@ -476,7 +478,7 @@ define(function(require){
 				fax.status = details.success === true ? 'success' : 'failed';
 				fax.formatted = {};
 
-				if(details.success === false) {
+				if (details.success === false) {
 					fax.formatted.error = details.result_text;
 				}
 
@@ -496,7 +498,7 @@ define(function(require){
 			var self = this,
 				type = pType === 'inbound' ? 'inbox' : 'outbox';
 
-			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/'+ type +'/' + mediaId + '/attachment?auth_token=' + self.getAuthToken();
+			return self.apiUrl + 'accounts/' + self.accountId + '/faxes/' + type + '/' + mediaId + '/attachment?auth_token=' + self.getAuthToken();
 		},
 
 		oldRenderLogs: function(pArgs) {
@@ -541,11 +543,10 @@ define(function(require){
 			});
 		},
 
-
 		logsBindEvents: function(template) {
 			var self = this;
 
-			template.on('click','.detail-link', function() {
+			template.on('click', '.detail-link', function() {
 				var logId = $(this).parents('tr').data('id');
 
 				self.logsRenderDetailPopup(logId);
@@ -570,8 +571,7 @@ define(function(require){
 		},
 
 		logsFormatDataTable: function(logs) {
-			var self = this,
-				formattedArray = [];
+			var self = this;
 
 			_.each(logs, function(log) {
 				log.formatted = {};
@@ -593,15 +593,14 @@ define(function(require){
 				formattedKey = '';
 
 			_.each(details, function(value, key) {
-				if(key === 'errors') {
+				if (key === 'errors') {
 					formattedData.errors = value;
-				}
-				else {
+				} else {
 					formattedKey = self.i18n.active().fax.logs.detailDialog.apiKeys.hasOwnProperty(key) ? self.i18n.active().fax.logs.detailDialog.apiKeys[key] : key.replace(/_/g, ' ');
 					formattedData.metadata[key] = {
 						friendlyKey: formattedKey,
 						value: value
-					}
+					};
 				}
 			});
 
@@ -648,10 +647,9 @@ define(function(require){
 					accountId: self.accountId,
 					filters: {
 						created_from: monster.util.dateToBeginningOfGregorianDay(fromDate),
-						created_to:  monster.util.dateToEndOfGregorianDay(toDate),
+						created_to: monster.util.dateToEndOfGregorianDay(toDate),
 						paginate: false
-					},
-
+					}
 				},
 				success: function(data) {
 					callback && callback(data.data);
@@ -668,10 +666,9 @@ define(function(require){
 					accountId: self.accountId,
 					filters: {
 						created_from: monster.util.dateToBeginningOfGregorianDay(fromDate),
-						created_to:  monster.util.dateToEndOfGregorianDay(toDate),
+						created_to: monster.util.dateToEndOfGregorianDay(toDate),
 						paginate: false
-					},
-
+					}
 				},
 				success: function(data) {
 					callback && callback(data.data);
@@ -723,7 +720,7 @@ define(function(require){
 					self.deleteFax(faxId, type, function(data) {
 						callback && callback(null, data);
 					});
-				}
+				};
 			});
 
 			monster.parallel(requests, function(err, results) {
@@ -747,16 +744,16 @@ define(function(require){
 			});
 		},
 
-		resendFaxes: function(listFaxes, callback) {
+		resendFaxes: function(listFaxes, globalCallback) {
 			var self = this,
 				requests = {};
 
 			_.each(listFaxes, function(faxId) {
 				requests[faxId] = function(callback) {
-					self.resendFax(faxId,  function(data) {
+					self.resendFax(faxId, function(data) {
 						callback && callback(null, data);
 					});
-				}
+				};
 			});
 
 			monster.parallel(requests, function(err, results) {
