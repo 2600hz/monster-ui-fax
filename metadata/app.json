@@ -3,9 +3,15 @@
 	"i18n": {
 		"en-US": {
 			"label": "Fax Manager",
-			"description": "The Fax Manager allow you to review inbound and outbound faxes.",
+			"description": "The Fax Manager allows visibility across all inbound, outbound and fax to email transactions. Limited visibility on fax activities, can cause complex issues that make troubleshooting a pain. However, with Fax Manager, users can bulk delete faxes from the database, recover missing logs, download fax conversions and much more. This app acts as a central administration hub for managing and downloading all real-time fax activities.",
 			"extended_description": "",
 			"features": [
+				"Inbound fax control",
+				"Outbound fax visibility",
+				"Fax to email analysis",
+				"Instant download of all fax log activity",
+				"Bulk delete",
+				"Recover missing fax logs"
 			]
 		}
 	},
@@ -19,6 +25,7 @@
 	"license": "-", 
 	"price": 0,
 	"screenshots": [
+		"OutboundFaxes.png"
 	],
 	"urls": {
 		"documentation": "{documentation_url}",
