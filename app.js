@@ -1,6 +1,6 @@
 define(function(require) {
 	var $ = require('jquery'),
-		_ = require('underscore'),
+		_ = require('lodash'),
 		monster = require('monster'),
 		chosen = require('chosen'),
 		toastr = require('toastr');
@@ -46,7 +46,7 @@ define(function(require) {
 			var self = this;
 
 			self.getFaxData(function(results) {
-				self.appFlags.faxboxes = _.indexBy(results.faxboxes, 'id');
+				self.appFlags.faxboxes = _.keyBy(results.faxboxes, 'id');
 
 				var menus = [
 					{
