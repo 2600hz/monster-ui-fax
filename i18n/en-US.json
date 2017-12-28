@@ -29,6 +29,12 @@
 			},
 			"noData": "N/A"
 		},
+		"empty": {
+			"headline1": "There are",
+			"headline2": "faxboxes recognized on this account",
+			"subHeadlineInbound": "Select a box to manage the inbound faxes it contains.",
+			"subHeadlineOutbound": "Select a box to manage the outbound faxes it sent."
+		},
 		"actionBar": {
 			"select": {
 				"all": "All on page",
@@ -36,9 +42,8 @@
 				"completed": "Completed",
 				"none": "None"
 			},
-			"selectFax": {
-				"none": "Filter to a specific Faxbox",
-				"all": "Show All Faxboxes"
+			"selectFaxbox": {
+				"none": "Select a Fax Box"
 			},
 			"from": "From",
 			"to": "To",
@@ -48,11 +53,9 @@
 				"select": "Select",
 				"resend": "Resend",
 				"delete": "Delete"
-			}
-		},
-		"empty": {
-			"headline": "In order to view and manage faxes, first select the desired fax box in this account.",
-			"subtitle": "Use the 'Filter to a specific Faxbox' above and to the left."
+			},
+			"currentlyViewing": "Currently Viewing",
+			"filterByDate": "Filter By Dates"
 		},
 		"CDRPopup": {
 			"title": "Fax Details"
