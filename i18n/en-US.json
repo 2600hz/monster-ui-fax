@@ -36,6 +36,7 @@
 			"subHeadlineOutbound": "Select a box to manage the outbound faxes it sent."
 		},
 		"actionBar": {
+			"refresh": "Refresh",
 			"select": {
 				"all": "All on page",
 				"failed": "Failed",
