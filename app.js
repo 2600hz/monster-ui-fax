@@ -171,7 +171,9 @@ console.log(_.size(self.appFlags.faxboxes));
 			monster.ui.tooltips(template);
 			monster.ui.footable(template.find('.footable'));
 
-			$selectFaxbox.chosen({ search_contains: true, placeholder_text_single: self.i18n.active().fax.actionBar.selectFaxbox.none });
+			monster.ui.chosen($selectFaxbox, {
+				placeholder_text_single: self.i18n.active().fax.actionBar.selectFaxbox.none
+			});
 
 			$selectFaxbox.on('change', function() {
 				var faxboxId = $(this).val();
