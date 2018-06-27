@@ -1,0 +1,91 @@
+{
+    "fax": {
+        "CDRPopup": {
+            "title": "Faxdetails"
+        },
+        "actionBar": {
+            "currentlyViewing": "Derzeit angezeigt",
+            "filterByDate": "Nach Datum filtern",
+            "from": "Von",
+            "markAsNew": "Als neu markieren",
+            "refresh": "Aktualisieren",
+            "select": {
+                "all": "Alle auf Seite",
+                "completed": "Abgeschlossen",
+                "failed": "Fehlgeschlagen",
+                "none": "Keine"
+            },
+            "selectFaxbox": {
+                "none": "Wählen Sie eine Faxbox aus"
+            },
+            "to": "An",
+            "tooltips": {
+                "delete": "Löschen",
+                "refresh": "Aktualisieren",
+                "resend": "Erneut senden",
+                "select": "Auswählen"
+            }
+        },
+        "deleteConfirm": {
+            "confirmButtonText": "Ausgewählte Dateien löschen",
+            "content": "Wenn Sie das/die {{variable}} ausgewählten Faxe löschen, werden diese dauerhaft aus dem System entfernt. Diese Aktion kann nicht wieder rückgängig gemacht werden, und die betroffenen Dateien werden endgültig verloren gehen.",
+            "success": "Sie haben die ausgewählten Faxe erfolgreich im System gelöscht!",
+            "title": "Sind Sie sicher?"
+        },
+        "empty": {
+            "headline1": "Es gibt",
+            "headline2": "Faxboxes für dieses Konto",
+            "subHeadlineInbound": "Wählen Sie eine Box aus",
+            "subHeadlineOutbound": "Wählen Sie eine Box aus"
+        },
+        "logs": {
+            "detailDialog": {
+                "errorTitle": "Fehler",
+                "metadataTitle": "Metadaten",
+                "popupTitle": "Technische Details"
+            },
+            "tableTitles": {
+                "date": "Datum",
+                "details": "Details",
+                "from": "Von",
+                "status": "Status",
+                "to": "An"
+            }
+        },
+        "menuTitles": {
+            "inbound": "Eingehende Faxe",
+            "logs": "E-Mail zu Fax – Protokolle",
+            "outbound": "Ausgehende Faxe",
+            "storage": "Speicher"
+        },
+        "resendConfirm": {
+            "confirmButtonText": "Faxe erneut senden",
+            "content": "Sie versuchen gerade",
+            "success": "Ihr Versuch",
+            "title": "Sind Sie sicher?"
+        },
+        "table": {
+            "columns": {
+                "from": "Von",
+                "pages": "Seiten",
+                "received": "Empfangen",
+                "receivingFaxbox": "Faxbox für Empfang",
+                "receivingNumber": "Nummer für Empfang",
+                "sendingFaxbox": "Faxbox wird versendet",
+                "sendingNumber": "Nummer wird versendet",
+                "sent": "Datum",
+                "status": "Status"
+            },
+            "emptyRow": "Unter dieser Faxbox sind keine Faxe aufgelistet",
+            "noData": "%",
+            "status": {
+                "completed": "Abgeschlossen",
+                "failed": "Fehlgeschlagen",
+                "pending": "Ausstehend",
+                "processing": "In Bearbeitung",
+                "success": "Erfolg"
+            }
+        },
+        "title": "Faxportal"
+    }
+}
