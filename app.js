@@ -122,7 +122,10 @@ console.log(_.size(self.appFlags.faxboxes));
 					faxboxes: self.appFlags.faxboxes,
 					count: _.size(self.appFlags.faxboxes)
 				},
-				template = $(monster.template(self, type + '-faxes', dataTemplate));
+				template = $(self.getTemplate({
+					name: type + '-faxes',
+					data: dataTemplate
+				}));
 
 			self.initDatePickerFaxboxes(type, parent, template);
 
@@ -199,7 +202,12 @@ console.log(_.size(self.appFlags.faxboxes));
 				template.find('.select-fax:checked').each(function(a, el) {
 					listSelected.push($(el).data('id'));
 				});
-				var content = monster.template(self, '!' + self.i18n.active().fax.deleteConfirm.content, { variable: listSelected.length });
+				var content = self.getTemplate({
+					name: '!' + self.i18n.active().fax.deleteConfirm.content,
+					data: {
+						variable: listSelected.length
+					}
+				});
 
 				monster.ui.confirm(content, function() {
 					template.find('.select-fax:checked').each(function(a, el) {
@@ -232,7 +240,12 @@ console.log(_.size(self.appFlags.faxboxes));
 					listSelected.push($(el).data('id'));
 				});
 
-				var content = monster.template(self, '!' + self.i18n.active().fax.resendConfirm.content, { variable: listSelected.length });
+				var content = self.getTemplate({
+					name: '!' + self.i18n.active().fax.resendConfirm.content,
+					data: {
+						variable: listSelected.length
+					}
+				});
 				monster.ui.confirm(content, function() {
 					self.resendFaxes(listSelected, function() {
 						toastr.success(self.i18n.active().fax.resendConfirm.success);
@@ -349,7 +362,10 @@ console.log(_.size(self.appFlags.faxboxes));
 					dataTemplate = {
 						faxes: formattedData
 					},
-					$rows = $(monster.template(self, type + '-faxes-rows', dataTemplate));
+					$rows = $(self.getTemplate({
+						name: type + '-faxes-rows',
+						data: dataTemplate
+					}));
 
 				callback && callback($rows, data);
 			});
@@ -415,7 +431,9 @@ console.log(_.size(self.appFlags.faxboxes));
 			var self = this;
 
 			self.getFaxDetails(type, id, function(faxDetails) {
-				var template = $(monster.template(self, 'fax-CDRDialog'));
+				var template = $(self.getTemplate({
+					name: 'fax-CDRDialog'
+				}));
 
 				monster.ui.renderJSON(faxDetails, template.find('#jsoneditor'));
 
@@ -452,7 +470,10 @@ console.log(_.size(self.appFlags.faxboxes));
 
 			self.getStorage(function(storage) {
 				var formattedData = self.storageFormatData(storage),
-					template = $(monster.template(self, 'storage', formattedData));
+					template = $(self.getTemplate({
+						name: 'storage',
+						data: formattedData
+					}));
 
 				self.storageBindEvents(template);
 
@@ -487,7 +508,12 @@ console.log(_.size(self.appFlags.faxboxes));
 
 			self.logsGetData(function(logs) {
 				var formattedData = self.logsFormatDataTable(logs),
-					template = $(monster.template(self, 'logs-layout', { logs: formattedData }));
+					template = $(self.getTemplate({
+						name: 'logs-layout',
+						data: {
+							logs: formattedData
+						}
+					}));
 
 				monster.ui.footable(template.find('.footable'));
 
@@ -517,7 +543,10 @@ console.log(_.size(self.appFlags.faxboxes));
 			var self = this;
 
 			self.logsGetDetails(logId, function(details) {
-				var detailTemplate = $(monster.template(self, 'logs-detail', details));
+				var detailTemplate = $(self.getTemplate({
+					name: 'logs-detail',
+					data: details
+				}));
 
 				detailTemplate.find('#close').on('click', function() {
 					popup.dialog('close').remove();
