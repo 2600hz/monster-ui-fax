@@ -1,8 +1,7 @@
 define(function(require) {
 	var $ = require('jquery'),
 		_ = require('lodash'),
-		monster = require('monster'),
-		toastr = require('toastr');
+		monster = require('monster');
 
 	var app = {
 		name: 'fax',
@@ -221,7 +220,10 @@ console.log(_.size(self.appFlags.faxboxes));
 							.show();
 
 					self.deleteFaxes(listSelected, type, function() {
-						toastr.success(self.i18n.active().fax.deleteConfirm.success);
+						monster.ui.toast({
+							type: 'success',
+							message: self.i18n.active().fax.deleteConfirm.success
+						});
 
 						self.displayListFaxes(type, template, faxboxId);
 					});
@@ -248,7 +250,10 @@ console.log(_.size(self.appFlags.faxboxes));
 				});
 				monster.ui.confirm(content, function() {
 					self.resendFaxes(listSelected, function() {
-						toastr.success(self.i18n.active().fax.resendConfirm.success);
+						monster.ui.toast({
+							type: 'success',
+							message: self.i18n.active().fax.resendConfirm.success
+						});
 
 						self.displayListFaxes(type, template, faxboxId);
 					});
