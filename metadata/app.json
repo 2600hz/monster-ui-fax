@@ -2,7 +2,7 @@
 	"name": "fax",
 	"i18n": {
 		"de-DE": {
-			"label": "Faxes (Faxe)",
+			"label": "Faxe",
 			"description": "Die Faxes-App gibt Einblick in alle eingehenden, ausgehenden und Fax-zu-E-Mail-Vorgänge. Eine eingeschränkte Einsehbarkeit in Faxaktivitäten kann zu komplizierten Problemen führen, die nur schwer zu beheben sind. Mit der Faxes-App jedoch können Benutzer viele Faxe auf einmal in der Datenbank löschen, fehlende Protokolle wiederherstellen, Faxkonvertierungen herunterladen und vieles mehr. Diese App fungiert als zentraler Administrations-Hub für das Verwalten und Herunterladen aller Faxaktivitäten in Echtzeit.",
 			"extended_description": "",
 			"features": [
