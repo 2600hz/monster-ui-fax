@@ -7,14 +7,14 @@
 					<th>{{ i18n.fax.logs.tableTitles.from }}</th>
 					<th>{{ i18n.fax.logs.tableTitles.to }}</th>
 					<th data-sorted="true" data-direction="DESC" data-breakpoints="xs">{{ i18n.fax.logs.tableTitles.date }}</th>
-					<th data-filterable="false" data-type="html">{{ i18n.fax.logs.tableTitles.details }}</th>
+					<th data-filterable="false" data-sortable="false" data-type="html">{{ i18n.fax.logs.tableTitles.details }}</th>
 				</tr>
 			</thead>
 			<tbody>
 
 			{{#each logs}}
 				<tr class="log-row" data-id="{{id}}" data-id="{{id}}">
-					<td>
+					<td data-sort-value="{{formatted.hasError}}">
 						{{#if formatted.hasError}}
 							<i class="monster-red fa fa-thumbs-down"></i>
 						{{else}}
