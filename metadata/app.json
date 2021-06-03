@@ -15,9 +15,9 @@
 			]
 		},
 		"en-US": {
-			"label": "Faxes",
-			"description": "The Faxes app allows visibility across all inbound, outbound and fax to email transactions. Limited visibility on fax activities, can cause complex issues that make troubleshooting a pain. However, with the Faxes app, users can bulk delete faxes from the database, recover missing logs, download fax conversions and much more. This app acts as a central administration hub for managing and downloading all real-time fax activities.",
-			"extended_description": "",
+			"label": "Fax Manager",
+			"description": "Fax Manager is a central administrative hub for managing and downloading all real-time fax activities.",
+			"extended_description": "Limited visibility on fax activities can cause complex issues that make troubleshooting a pain. However, with Fax Manager, you have visibility across all inbound, outbound, and fax-to-email transactions. Users can bulk delete faxes from the database, recover missing logs, download fax conversions, and much more.",
 			"features": [
 				"Inbound fax control",
 				"Outbound fax visibility",
@@ -38,7 +38,8 @@
 	"license": "-",
 	"price": 0,
 	"screenshots": [
-		"OutboundFaxes.png"
+		"OutboundFaxes.png",
+		"InboundFaxes.png"
 	],
 	"urls": {
 		"documentation": "{documentation_url}",
